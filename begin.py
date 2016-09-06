@@ -43,6 +43,9 @@ twitter = Twython(iden.twitter_app_key, iden.twitter_app_secret, iden.twitter_oa
 #Define Clash API and retrieve data:
 tag = iden.coc_clan_tag
 results = api.get_clan_members(tag)
+if type(results[0]) is str:
+    twitter.update_status(status = 'Unfortunately, there is an error with your code. COC API returned error ' + results[1] )
+
 
 #Set Working Directory:
 os.chdir(iden.home_dir)
@@ -79,8 +82,10 @@ if os.path.isfile("new.csv"):
 
     #Member Level Up Announce
     for member in newMembers:
-        if oldLevel[member] != newLevel[member]:
-            twitter.update_status(status = member + ' has reached level ' + newLevel[member] + '! Nice!')
+        if member in oldMembers:
+            if newLevel[member] in oldLevel[member]:
+                if oldLevel[member] != newLevel[member]:
+                    twitter.update_status(status = member + ' has reached level ' + newLevel[member] + '! Nice!')
 
     #League Change Announce
     newSeasonCheck = 0
@@ -92,7 +97,7 @@ if os.path.isfile("new.csv"):
     else:
         for member in newMembers:
             if oldLeagues[member] != newLeagues[member]:
-                if leagues[oldLeagues[member]] > leagues[newLeagues[member]]:
+                if leagues[eagues[member]] > leagues[newLeagues[member]]:
                     twitter.update_status(status = member + ' has been demoted to ' + newLeagues[member] + '. Oh no!')
                 else:
                     twitter.update_status(status = member + ' has been promoted to ' + newLeagues[member] + '. Way to go!')
